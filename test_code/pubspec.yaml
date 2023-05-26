@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   date_time_picker: "^2.1.0"
   flappy_search_bar: ^1.7.2
+  slide_to_act: ^2.0.1
 
 dev_dependencies:
   flutter_test:

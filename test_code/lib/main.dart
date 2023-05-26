@@ -21,6 +21,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
+
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SlideAction(
@@ -40,8 +41,4 @@ class HomePage extends StatelessWidget {
             sliderButtonIcon: Icon(Icons.location_on),
             borderRadius: 30,
           ),
-        ),
-      ),
-    );
-  }
-}
+
