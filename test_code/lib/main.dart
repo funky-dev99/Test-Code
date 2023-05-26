@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
             ),
             outerColor: Colors.blue,
             innerColor: Colors.white,
-            sliderButtonIcon: Icon(Icons.arrow_forward),
+            sliderButtonIcon: Icon(Icons.location_on),
             borderRadius: 30,
           ),
         ),
