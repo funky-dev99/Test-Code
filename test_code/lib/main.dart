@@ -21,220 +21,24 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ListView(
-          children: <Widget>[
-            Builder(
-              builder: (context) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(),
-                );
-              },
+
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SlideAction(
+            onSubmit: () {
+              // Add your logic here when the slide action is submitted
+              print('Slide action submitted!');
+            },
+            child: Text(
+              'Slide to Submit',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
             ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reassemble(),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reset(),
-                      );
-                    },
-                    innerColor: Colors.black,
-                    outerColor: Colors.white,
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reset(),
-                      );
-                    },
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      'Unlock',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    sliderButtonIcon: Icon(Icons.lock),
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reset(),
-                      );
-                    },
-                    height: 100,
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reset(),
-                      );
-                    },
-                    sliderButtonIconSize: 48,
-                    sliderButtonYOffset: -20,
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reset(),
-                      );
-                    },
-                    elevation: 24,
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reset(),
-                      );
-                    },
-                    borderRadius: 16,
-                    animationDuration: Duration(seconds: 1),
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reset(),
-                      );
-                    },
-                    reversed: true,
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reset(),
-                      );
-                    },
-                    submittedIcon: Icon(
-                      Icons.done_all,
-                      color: Colors.white,
-                    ),
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                final GlobalKey<SlideActionState> _key = GlobalKey();
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    key: _key,
-                    onSubmit: () {
-                      Future.delayed(
-                        Duration(seconds: 1),
-                            () => _key.currentState?.reset(),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (context) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SlideAction(
-                    sliderRotate: false,
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+            outerColor: Colors.blue,
+            innerColor: Colors.white,
+            sliderButtonIcon: Icon(Icons.location_on),
+            borderRadius: 30,
+          ),
+
