@@ -1,27 +1,68 @@
-import 'package:file_picker/file_picker.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
+import 'package:intl/intl.dart';
 
 
 
-class PaySlipUp extends StatefulWidget {
-  const PaySlipUp({Key? key}) : super(key: key);
+class AttendLocOut extends StatefulWidget {
+  const AttendLocOut({Key? key}) : super(key: key);
 
   @override
-  State<PaySlipUp> createState() => _PaySlipUpState();
+  State<AttendLocOut> createState() => _AttendLocOutState();
 }
 
-class _PaySlipUpState extends State<PaySlipUp> {
-  String selectedEmployeeType = '';
-  final desController = TextEditingController();
-  String uploadedFilePath = ''; // Variable to store the uploaded file path
+class _AttendLocOutState extends State<AttendLocOut> {
+  // TextEditingController dateController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
 
-  final List<String> _employeeTypes = [
-    'Employee 1',
-    'Employee 2',
-    'Employee 3',
-    'Employee 4',
-    'Employee 5',
-  ];
+  @override
+  void initState() {
+    dateController.text = "";
+    _timeString = _formatDateTime(DateTime.now());
+    Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime()); //set the initial value of text field
+    super.initState();
+  }
+
+
+
+  late String _timeString;
+
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionGranted;
+
+  LocationData? _userLocation;
+
+  Future<void> _getUserLocation() async {
+    Location location = Location();
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    final locationData = await location.getLocation();
+    setState(() {
+      _userLocation = locationData;
+    });
+
+    // if (_userLocation != null) {
+    //   print('Latitude: ${_userLocation?.latitude}');
+    //   print('Longitude: ${_userLocation?.longitude}');
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,192 +70,126 @@ class _PaySlipUpState extends State<PaySlipUp> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(
-          "Pay Slip",
+          "Location",
           style: TextStyle(color: Colors.black, fontSize: 22),
         ),
         leading: IconButton(
           icon: Image.asset("images/back.png"),
-          onPressed: ()
-          {
+          onPressed: () {
             // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => HomePage()),
-            // );
+            //     context, MaterialPageRoute(builder: (context) => AttendanceMain()));
           },
         ),
-        elevation: 0.0,
+        actions: [
+          IconButton(icon: Icon(Icons.person, size: 30.0,),
+            color: Colors.black,
+            tooltip: 'View Profile',
+            onPressed: (){},)
+        ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(left: 0.0),
-                  margin: const EdgeInsets.only(left: 10.0),
-                  child: const Text(
-                    'Select Employee :',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 20),
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  width: 320,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[350],
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: DropdownButton<String>(
-                    value: selectedEmployeeType.isNotEmpty ? selectedEmployeeType : null,
-                    hint: const Text('Employee'),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedEmployeeType = value ?? '';
-                      });
-                    },
-                    items: _employeeTypes.map((String employeeType) {
-                      return DropdownMenuItem<String>(
-                        value: employeeType,
-                        child: Text(employeeType),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(left: 0.0),
-                  margin: const EdgeInsets.only(left: 10.0),
-                  child: const Text(
-                    'Any Note :',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              child: TextFormField(
-                controller: desController,
-                keyboardType: TextInputType.multiline,
-                maxLines: 3,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              Text(_timeString),
+
+              TextField(
+
+
+                controller: dateController, //editing controller of this TextField
                 decoration: const InputDecoration(
-                  hintText: 'Type here..',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(left: 0.0),
-                  margin: const EdgeInsets.only(left: 10.0, top: 5.0),
-                  child: const Text(
-                    'Upload Payment Slip :',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton.icon(
-              onPressed: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-                if (result != null) {
-                  PlatformFile file = result.files.first;
-                  setState(() {
-                    uploadedFilePath = file.path ?? '';
-                  });
-                  print('File path: ${file.path}');
-                  print('File name: ${file.name}');
-                  print('File size: ${file.size}');
-                } else {
-                  // User canceled the file picker
-                }
-              },
-              icon: const Icon(
-                Icons.cloud_upload,
-                color: Colors.red,
+                    icon: Icon(Icons.calendar_today), //icon of text field
+                    labelText: "Enter Date" //label text of field
+                ),
+                readOnly: true,  // when true user cannot edit text
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(), //get today's date
+                      firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                      lastDate: DateTime(2101)
+                  );
+
+                  if(pickedDate != null ){
+                    print(pickedDate);  //get the picked date in the format => 2022-07-04 00:00:00.000
+                    String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                    print(formattedDate); //formatted date output using intl package =>  2022-07-04
+                    //You can format date as per your need
+
+                    setState(() {
+                      dateController.text = formattedDate; //set foratted date to TextField value.
+                    });
+                  }else{
+                    print("Date is not selected");
+                  }
+                },
               ),
-              label: const Text(
-                'Upload',
-                style: TextStyle(color: Colors.black),
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(16.0),
-                backgroundColor: Colors.grey[350],
+
+
+              SizedBox(height: 25),
+
+
+              MaterialButton(
+                onPressed: _getUserLocation,
+                child: const Text('Get Your Location',style: TextStyle(color: Colors.white),),
+                minWidth: 150.0,
+                height: 50.0,
+                color: Colors.black,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
+              const SizedBox(height: 25),
+              _userLocation != null
+                  ? Wrap(
+                children: [
+                  Text('Your latitude: ${_userLocation?.latitude}'),
+                  const SizedBox(width: 10),
+                  Text('Your longitude: ${_userLocation?.longitude}'),
+                ],
+              )
+                  : const Text(
+                  'Please enable location service and grant permission'),
 
-            ),
-            if (uploadedFilePath.isNotEmpty) // Display the uploaded file path if available
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text('Uploaded File: $uploadedFilePath'),
-              ),
-            const SizedBox(
-              height: 50,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                print('Employee Type: $selectedEmployeeType');
-                print('Note: ${desController.text}');
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.black,
-                minimumSize: const Size(150, 50),
-              ),
-              child: const Text(
-                'Submit',
-                style: TextStyle(
-                  fontSize: 18,
+              SizedBox(height: 25),
+
+              MaterialButton(
+                onPressed: (){
+                  print('Latitude: ${_userLocation?.latitude}');
+                  print('Longitude: ${_userLocation?.longitude}');
+                  print('Time:$_timeString');
+                },
+                child: const Text('Mark Your Out'),
+                minWidth: 150.0,
+                height: 50.0,
+                color: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-              ),
-            ),
-          ],
+              )
+
+
+            ],
+          ),
         ),
       ),
     );
+
+
+  }
+  void _getTime() {
+    final DateTime now = DateTime.now();
+    final String formattedDateTime = _formatDateTime(now);
+    setState(() {
+      _timeString = formattedDateTime;
+    });
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return DateFormat('hh:mm:ss').format(dateTime);
   }
 }
